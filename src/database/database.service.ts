@@ -12,9 +12,14 @@ export class DatabaseService {
     values: any[] = [],
   ): Promise<any[]> {
     this.logger.debug(`Executing query: ${queryText} (${values})`);
-    return this.pool.query(queryText, values).then((result: QueryResult) => {
-      this.logger.debug(`Executed query, result size ${result.rows.length}`);
-      return result.rows;
-    });
+    return this.pool
+      .query(queryText, values)
+      .then((result: QueryResult) => {
+        this.logger.debug(`Executed query, result size ${result.rows.length}`);
+        return result.rows;
+      })
+      .catch((error) => {
+        throw new Error(error.code);
+      });
   }
 }
