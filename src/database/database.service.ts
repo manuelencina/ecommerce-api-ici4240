@@ -16,9 +16,11 @@ export class DatabaseService {
       .query(queryText, values)
       .then((result: QueryResult) => {
         this.logger.debug(`Executed query, result size ${result.rows.length}`);
+        this.logger.debug(`ROWS =====  ${result.rows}`);
         return result.rows;
       })
       .catch((error) => {
+        this.logger.debug(`ERROR: ${error}`);
         throw new Error(error.code);
       });
   }
