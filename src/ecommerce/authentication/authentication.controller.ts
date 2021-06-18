@@ -2,8 +2,6 @@ import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { LoginUserDto } from '../user/dto/login-user.dto';
 import { RegisterUserDto } from '../user/dto/register-user.dto';
 import { AuthenticationService } from './authentication.service';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Controller('authentication')
 export class AuthenticationController {
@@ -26,14 +24,6 @@ export class AuthenticationController {
     const accessToken = await this.authenticationService.login(loginUserDto);
     return {
       ...accessToken,
-    };
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Get('test')
-  public test() {
-    return {
-      message: 'TEST',
     };
   }
 }
