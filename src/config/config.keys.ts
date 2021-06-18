@@ -6,4 +6,5 @@ export enum Configuration {
   DB_PASSWORD = 'DB_PASSWORD',
   DB_PORT = 'DB_PORT',
   TOKEN_SECRET = 'TOKEN_SECRET',
+  EXPIRES_IN = 'EXPIRES_IN',
 }

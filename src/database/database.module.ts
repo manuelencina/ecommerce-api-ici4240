@@ -13,6 +13,7 @@ const databasePoolFactory = async (configService: ConfigService) => {
     database: configService.get(Configuration.DB_NAME),
     password: configService.get(Configuration.DB_PASSWORD),
     port: Number(configService.get(Configuration.DB_PORT)),
+    ssl: true,
   });
 };
 
