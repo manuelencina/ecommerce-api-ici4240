@@ -31,8 +31,9 @@ export class AuthenticationService {
       return accessToken;
     } catch (error) {
       return {
-        status: error.getStatus(),
-        message: error.getResponse(),
+        // status: error.getStatus(),
+        // message: error.getResponse(),
+        error,
       };
     }
   }
