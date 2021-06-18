@@ -52,6 +52,11 @@ export class UserRepositoryPostgresql implements UserRepository {
       ],
     );
 
+    const cart = await this.databaseService.executeQuery(
+      'INSERT INTO shopping_carts(user_id) VALUES($1) RETURNING *',
+      [userRegistered[0]['user_id']],
+    );
+
     return userRegistered[0]['user_id'];
   }
 
