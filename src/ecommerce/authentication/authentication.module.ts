@@ -7,10 +7,12 @@ import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './jwt-payload-constants';
 import { UserModule } from '../user/user.module';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { ConfigModule } from 'src/config/config.module';
 
 @Module({
   imports: [
     DatabaseModule,
+    ConfigModule,
     UserModule,
     PassportModule.register({
       defaultStrategy: 'jwt',
