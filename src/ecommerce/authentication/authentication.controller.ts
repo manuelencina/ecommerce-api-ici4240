@@ -18,14 +18,6 @@ export class AuthenticationController {
     );
     return {
       ...accessToken,
-      PORT: this.configService.get('PORT'),
-      DB_HOST: this.configService.get('DB_HOST'),
-      DB_USER: this.configService.get('DB_USER'),
-      DB_NAME: this.configService.get('DB_NAME'),
-      DB_PASSWORD: this.configService.get('DB_PASSWORD'),
-      DB_PORT: this.configService.get('DB_PORT'),
-      TOKEN_SECRET: this.configService.get('TOKEN_SECRET'),
-      EXPIRES_IN: this.configService.get('EXPIRES_IN'),
     };
   }
 
