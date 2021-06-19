@@ -56,7 +56,6 @@ export class AuthenticationService {
       sub: userId,
     });
     return {
-      iss: 'ecommerce-api',
       'access-token': accessToken,
     };
   }

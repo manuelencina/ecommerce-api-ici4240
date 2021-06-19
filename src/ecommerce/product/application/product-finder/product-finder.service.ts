@@ -8,9 +8,9 @@ export class ProductFinderService {
     private readonly productRepository: ProductRepository,
   ) {}
 
-  public async get(categoryId: string) {
+  public async get(criteriaId: string, criteriaType: string) {
     try {
-      return await this.productRepository.get(categoryId);
+      return await this.productRepository.get(criteriaId, criteriaType);
     } catch (error) {
       if (error.message === '22P02') {
         return {

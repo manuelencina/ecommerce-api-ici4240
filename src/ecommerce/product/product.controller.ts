@@ -1,6 +1,6 @@
-import { Body, Controller, Get } from '@nestjs/common';
+import { ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { ProductFinderService } from './application/product-finder/product-finder.service';
-import { ProductsByCategoryIdDto } from './dto/products-by-category-id.dto';
 
 @Controller('products')
 export class ProductController {
@@ -8,9 +8,29 @@ export class ProductController {
     private readonly productfinderService: ProductFinderService,
   ) {}
 
-  @Get()
-  public async getProducts(@Body() body: ProductsByCategoryIdDto) {
-    const products = await this.productfinderService.get(body.categoryId);
+  @Get('by-category/:criteriaId')
+  public async getProductsByCategoryId(
+    @Param('criteriaId', new ParseUUIDPipe({ version: '4' }))
+    criteriaId: string,
+  ) {
+    const products = await this.productfinderService.get(
+      criteriaId,
+      'category_id',
+    );
+    return {
+      products,
+    };
+  }
+
+  @Get('by-brand/:criteriaId')
+  public async getProductsByBrandId(
+    @Param('criteriaId', new ParseUUIDPipe({ version: '4' }))
+    criteriaId: string,
+  ) {
+    const products = await this.productfinderService.get(
+      criteriaId,
+      'brand_id',
+    );
     return {
       products,
     };
