@@ -10,7 +10,6 @@ async function bootstrap() {
   app.enableCors();
   app.use(helmet());
   app.use(compression());
-  console.log(AppModule.port);
   await app.listen(AppModule.port);
 }
 bootstrap();
