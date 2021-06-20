@@ -25,29 +25,15 @@ export class AuthenticationService {
   }
 
   public async registerUser(userDto: RegisterUserDto) {
-    try {
-      const userId = await this.userCreatorService.save(userDto);
-      const accessToken = this.createToken(userId);
-      return accessToken;
-    } catch (error) {
-      return {
-        status: error.getStatus(),
-        message: error.getResponse(),
-      };
-    }
+    const userId = await this.userCreatorService.save(userDto);
+    const accessToken = this.createToken(userId);
+    return accessToken;
   }
 
   public async login(loginUserDto: LoginUserDto) {
-    try {
-      const user = await this.userFinderService.get(loginUserDto);
-      const accessToken = this.createToken(user['user_id']);
-      return accessToken;
-    } catch (error) {
-      return {
-        status: error.getStatus(),
-        message: error.getResponse(),
-      };
-    }
+    const user = await this.userFinderService.get(loginUserDto);
+    const accessToken = this.createToken(user['user_id']);
+    return accessToken;
   }
 
   private createToken(userId: string) {
@@ -56,7 +42,7 @@ export class AuthenticationService {
       sub: userId,
     });
     return {
-      'access-token': accessToken,
+      'access-token': `Bearer ${accessToken}`,
     };
   }
 }

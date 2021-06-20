@@ -5,7 +5,13 @@ import {
   Post,
   UsePipes,
   ValidationPipe,
+  Res,
+  HttpStatus,
+  HttpException,
+  HttpCode,
 } from '@nestjs/common';
+import { Response } from 'express';
+
 import { LoginUserDto } from '../user/dto/login-user.dto';
 import { RegisterUserDto } from '../user/dto/register-user.dto';
 import { AuthenticationService } from './authentication.service';
@@ -18,21 +24,46 @@ export class AuthenticationController {
 
   @UsePipes(new ValidationPipe())
   @Post('register')
-  public async register(@Body() registerUserDto: RegisterUserDto) {
-    const accessToken = await this.authenticationService.registerUser(
-      registerUserDto,
-    );
-    return {
-      ...accessToken,
-    };
+  @HttpCode(HttpStatus.CREATED)
+  public async register(
+    @Body() registerUserDto: RegisterUserDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    try {
+      const accessToken = await this.authenticationService.registerUser(
+        registerUserDto,
+      );
+      return {
+        ...accessToken,
+      };
+    } catch (error) {
+      return this.generateResponseForBadRequest(res, error);
+    }
   }
 
   @UsePipes(new ValidationPipe())
   @Post('login')
-  public async login(@Body() loginUserDto: LoginUserDto) {
-    const accessToken = await this.authenticationService.login(loginUserDto);
+  @HttpCode(HttpStatus.OK)
+  public async login(
+    @Body() loginUserDto: LoginUserDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    try {
+      const accessToken = await this.authenticationService.login(loginUserDto);
+      res.status(HttpStatus.OK);
+      return {
+        ...accessToken,
+      };
+    } catch (error) {
+      return this.generateResponseForBadRequest(res, error);
+    }
+  }
+
+  private generateResponseForBadRequest(res: Response, error: HttpException) {
+    res.status(error.getStatus());
     return {
-      ...accessToken,
+      status: error.getStatus(),
+      message: error.getResponse(),
     };
   }
 }
