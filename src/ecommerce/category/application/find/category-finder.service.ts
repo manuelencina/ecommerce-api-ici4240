@@ -4,7 +4,7 @@ import { CategoryRepository } from '../../domain/category-repository';
 @Injectable()
 export class CategoryFinderService {
   public constructor(
-    @Inject('ProductRepository')
+    @Inject('CategoryRepository')
     private readonly categoryRepository: CategoryRepository,
   ) {}
 
