@@ -19,6 +19,7 @@ export class DatabaseService {
         return result.rows;
       })
       .catch((error) => {
+        this.logger.debug(`Executed query, result ERROR: ${error}`);
         throw new Error(error.code);
       });
   }
