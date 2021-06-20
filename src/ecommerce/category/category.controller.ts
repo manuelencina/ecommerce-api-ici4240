@@ -5,7 +5,7 @@ import { CategoryFinderService } from './application/find/category-finder.servic
 export class CategoryController {
   public constructor(private readonly categoryFinder: CategoryFinderService) {}
 
-  @Get('collections')
+  @Get()
   public async getCategories() {
     try {
       const categories = await this.categoryFinder.get();
