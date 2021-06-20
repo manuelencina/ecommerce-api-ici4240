@@ -7,10 +7,14 @@ export class ShoppingCartPostgreSQL implements ShoppingCartRepository {
   public constructor(private readonly databaseService: DatabaseService) {}
 
   public async addProduct(productId: string, cartId: string, quantity: number) {
-    const table = await this.databaseService.executeQuery(
-      'INSERT INTO products_shopping_carts(product_id, cart_id, quantity) VALUES($1, $2, $3) RETURNING *',
-      [productId, cartId, quantity],
-    );
+    try {
+      await this.databaseService.executeQuery(
+        'INSERT INTO products_shopping_carts(product_id, cart_id, quantity) VALUES($1, $2, $3) RETURNING *',
+        [productId, cartId, quantity],
+      );
+    } catch (error) {
+      throw new HttpException(`invalid id`, HttpStatus.BAD_REQUEST);
+    }
   }
 
   public async updateQuantityPerProduct(cartId: string, quantity: number) {
@@ -18,7 +22,7 @@ export class ShoppingCartPostgreSQL implements ShoppingCartRepository {
       'SELECT cart_id FROM shopping_carts WHERE cart_id = $1',
       [cartId],
     );
-    console.log('SHOPPING CART', cartIdDb);
+
     if (cartIdDb.length < 1) {
       throw new HttpException(
         `cart with id ${cartId} does not exist`,
@@ -46,5 +50,16 @@ export class ShoppingCartPostgreSQL implements ShoppingCartRepository {
       'DELETE FROM products_shopping_carts WHERE cart_id=$1 AND product_id=$2',
       [cartId, productId],
     );
+  }
+
+  public async get(cartId: string) {
+    const cartDB = await this.databaseService.executeQuery(
+      'SELECT * FROM products_shopping_carts sh, products p  WHERE cart_id=$1 AND sh.product_id = p.product_id',
+      [cartId],
+    );
+    if (cartDB.length < 1) {
+      throw new HttpException(`product id invalid`, HttpStatus.BAD_REQUEST);
+    }
+    return cartDB;
   }
 }

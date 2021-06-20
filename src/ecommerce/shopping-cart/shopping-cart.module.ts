@@ -4,6 +4,7 @@ import { ShoppingCartPostgreSQL } from './infrastructure/shopping-cart-postgresq
 import { ShoppingCartUpdaterService } from './application/update/shopping-cart-updater.service';
 import { ShoppingCartController } from './shopping-cart.controller';
 import { AuthenticationModule } from '../authentication/authentication.module';
+import { ShoppingCartFinderService } from './application/find/shopping-cart-finder.service';
 
 @Module({
   imports: [DatabaseModule, AuthenticationModule],
@@ -14,8 +15,13 @@ import { AuthenticationModule } from '../authentication/authentication.module';
       useClass: ShoppingCartPostgreSQL,
     },
     ShoppingCartUpdaterService,
+    ShoppingCartFinderService,
   ],
-  exports: [ShoppingCartPostgreSQL, ShoppingCartUpdaterService],
+  exports: [
+    ShoppingCartPostgreSQL,
+    ShoppingCartUpdaterService,
+    ShoppingCartFinderService,
+  ],
   controllers: [ShoppingCartController],
 })
 export class ShoppingCartModule {}
