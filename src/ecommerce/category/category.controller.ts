@@ -6,7 +6,7 @@ export class CategoryController {
   public constructor(private readonly categoryFinder: CategoryFinderService) {}
 
   @Get('collections')
-  public async get() {
+  public async getCategories() {
     try {
       const categories = await this.categoryFinder.get();
       return {
@@ -17,5 +17,12 @@ export class CategoryController {
         error,
       };
     }
+  }
+
+  @Get('test')
+  public test() {
+    return {
+      message: 'Test',
+    };
   }
 }
