@@ -60,7 +60,7 @@ export class AuthenticationController {
   }
 
   private generateResponseForBadRequest(res: Response, error: HttpException) {
-    res.status(error.getStatus());
+    res.status(400);
     return {
       // status: error.getStatus(),
       // message: error.getResponse(),
