@@ -19,8 +19,9 @@ export class ProductFinderService {
         };
       }
       return {
-        status: error.getStatus(),
-        message: error.getResponse(),
+        // status: error.getStatus(),
+        // message: error.getResponse(),
+        error,
       };
     }
   }
