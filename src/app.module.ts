@@ -7,6 +7,7 @@ import { ProductModule } from './ecommerce/product/product.module';
 import { ShoppingCartModule } from './ecommerce/shopping-cart/shopping-cart.module';
 import { ConfigService } from './config/config.service';
 import { Configuration } from './config/config.keys';
+import { CategoryModule } from './ecommerce/category/category.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { Configuration } from './config/config.keys';
     UserModule,
     ProductModule,
     ShoppingCartModule,
+    CategoryModule,
   ],
   controllers: [],
   providers: [],
