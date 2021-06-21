@@ -19,10 +19,12 @@ export class ProductFinderService {
         };
       }
       return {
-        // status: error.getStatus(),
-        // message: error.getResponse(),
         error,
       };
     }
+  }
+
+  public async getProductById(productId: string) {
+    return await this.productRepository.getProductById(productId);
   }
 }
