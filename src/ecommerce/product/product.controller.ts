@@ -5,15 +5,30 @@ import { ProductFinderService } from './application/product-finder/product-finde
 @Controller('products')
 export class ProductController {
   public constructor(
-    private readonly productfinderService: ProductFinderService,
+    private readonly productFinderService: ProductFinderService,
   ) {}
+
+  @Get(':productId')
+  public async getProductById(
+    @Param('productId', new ParseUUIDPipe({ version: '4' }))
+    productId: string,
+  ) {
+    try {
+      const product = await this.productFinderService.getProductById(productId);
+      return {
+        product,
+      };
+    } catch (error) {
+      return { error };
+    }
+  }
 
   @Get('by-category/:criteriaId')
   public async getProductsByCategoryId(
     @Param('criteriaId', new ParseUUIDPipe({ version: '4' }))
     criteriaId: string,
   ) {
-    const products = await this.productfinderService.get(
+    const products = await this.productFinderService.get(
       criteriaId,
       'category_id',
     );
@@ -27,7 +42,7 @@ export class ProductController {
     @Param('criteriaId', new ParseUUIDPipe({ version: '4' }))
     criteriaId: string,
   ) {
-    const products = await this.productfinderService.get(
+    const products = await this.productFinderService.get(
       criteriaId,
       'brand_id',
     );

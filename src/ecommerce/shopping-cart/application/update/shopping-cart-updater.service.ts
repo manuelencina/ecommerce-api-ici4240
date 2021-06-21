@@ -11,8 +11,14 @@ export class ShoppingCartUpdaterService {
   public async addProduct(productId: string, cartId: string, quantity: number) {
     await this.shoppingCartRepository.addProduct(productId, cartId, quantity);
   }
-  public async updateQuantityPerProduct(cartId: string, quantity: number) {
+
+  public async updateQuantityPerProduct(
+    productId: string,
+    cartId: string,
+    quantity: number,
+  ) {
     await this.shoppingCartRepository.updateQuantityPerProduct(
+      productId,
       cartId,
       quantity,
     );

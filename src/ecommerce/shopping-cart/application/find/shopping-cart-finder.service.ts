@@ -8,7 +8,7 @@ export class ShoppingCartFinderService {
     private readonly shoppingCartRepository: ShoppingCartRepository,
   ) {}
 
-  public async get(cartId: string) {
-    return await this.shoppingCartRepository.get(cartId);
+  public async get(userId: string) {
+    return await this.shoppingCartRepository.get(userId);
   }
 }

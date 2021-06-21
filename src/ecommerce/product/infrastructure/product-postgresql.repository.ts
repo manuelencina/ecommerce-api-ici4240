@@ -5,6 +5,7 @@ import { ProductRepository } from '../domain/product-repository';
 @Injectable()
 export class ProductPostgresqlRepository implements ProductRepository {
   public constructor(private readonly databaseService: DatabaseService) {}
+
   public async get(criteriaId: string, criteriaType: string) {
     const query = `SELECT product_id, category_id, brand_id, title, price, stock, description, url_image FROM products WHERE ${criteriaType} = $1`;
     const products = await this.databaseService.executeQuery(query, [
@@ -17,5 +18,13 @@ export class ProductPostgresqlRepository implements ProductRepository {
       );
     }
     return products;
+  }
+
+  public async getProductById(productId: string) {
+    const productDb = await this.databaseService.executeQuery(
+      'SELECT * from products WHERE product_id=$1',
+      [productId],
+    );
+    return productDb;
   }
 }

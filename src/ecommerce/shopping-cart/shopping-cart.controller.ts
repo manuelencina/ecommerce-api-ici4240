@@ -7,10 +7,12 @@ import {
   Res,
   Get,
 } from '@nestjs/common';
+import { Req } from '@nestjs/common';
 import { Body, Controller, Param, Post, UseGuards } from '@nestjs/common';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 
 import { JwtAuthGuard } from '../authentication/guards/jwt-auth.guard';
+import { JwtPayload } from '../authentication/interfaces/jwt-payload.interface';
 import { ProductTrimmerDto } from '../product/dto/product-trimmer.dto';
 import { ProductUpdaterDto } from '../product/dto/product-updater.dto';
 import { ShoppingCartFinderService } from './application/find/shopping-cart-finder.service';
@@ -27,13 +29,13 @@ export class ShoppingCartController {
   @UseGuards(JwtAuthGuard)
   @Get()
   public async get(
-    @Body() body: ProductUpdaterDto,
+    @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
     try {
-      const shoppingCart = await this.shoppingCartFinder.get(body.cartId);
+      const shoppingCart = await this.shoppingCartFinder.get(String(req.user));
       return {
-        shoppingCart,
+        products: shoppingCart,
       };
     } catch (error) {
       return this.generateResponseForBadRequest(res, error);
@@ -74,6 +76,7 @@ export class ShoppingCartController {
         );
       } else {
         await this.shoppingCartUpdater.updateQuantityPerProduct(
+          body.productId,
           body.cartId,
           body.quantity,
         );
