@@ -47,12 +47,13 @@ export class ShoppingCartController {
   @Post()
   public async addProduct(
     @Body() body: ProductUpdaterDto,
+    @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
     try {
       await this.shoppingCartUpdater.addProduct(
         body.productId,
-        body.cartId,
+        String(req.user),
         body.quantity,
       );
       return this.generateMessage('product successfully added');
@@ -66,18 +67,19 @@ export class ShoppingCartController {
   @Put()
   public async updateQuantityPerProduct(
     @Body() body: ProductUpdaterDto,
+    @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
     try {
       if (body.quantity === 0) {
         await this.shoppingCartUpdater.deleteProduct(
           body.productId,
-          body.cartId,
+          String(req.user),
         );
       } else {
         await this.shoppingCartUpdater.updateQuantityPerProduct(
           body.productId,
-          body.cartId,
+          String(req.user),
           body.quantity,
         );
       }
@@ -92,10 +94,11 @@ export class ShoppingCartController {
   @Delete()
   public async deleteProduct(
     @Body() body: ProductTrimmerDto,
+    @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
     try {
-      await this.shoppingCartUpdater.deleteProduct(body.productId, body.cartId);
+      await this.shoppingCartUpdater.deleteProduct(body.productId, String(req.user));
       return this.generateMessage('product successfully removed');
     } catch (error) {
       return this.generateResponseForBadRequest(res, error);
@@ -103,10 +106,9 @@ export class ShoppingCartController {
   }
 
   private generateResponseForBadRequest(res: Response, error: HttpException) {
-    res.status(error.getStatus());
+    res.status(400);
     return {
-      status: error.getStatus(),
-      message: error.getResponse(),
+      error,
     };
   }
 

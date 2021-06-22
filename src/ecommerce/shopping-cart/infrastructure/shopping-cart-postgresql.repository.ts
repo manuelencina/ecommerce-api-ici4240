@@ -6,8 +6,11 @@ import { ShoppingCartRepository } from '../domain/shopping-cart.repository';
 export class ShoppingCartPostgreSQL implements ShoppingCartRepository {
   public constructor(private readonly databaseService: DatabaseService) {}
 
-  public async addProduct(productId: string, cartId: string, quantity: number) {
+  public async addProduct(productId: string, userId: string, quantity: number) {
     try {
+      const cart = await this.databaseService.executeQuery('SELECT cart_id FROM shopping_carts WHERE user_id=$1', [userId]);
+      const cartId = cart[0]['cart_id'];
+
       await this.databaseService.executeQuery(
         'INSERT INTO products_shopping_carts(product_id, cart_id, quantity) VALUES($1, $2, $3) RETURNING *',
         [productId, cartId, quantity],
@@ -37,9 +40,11 @@ export class ShoppingCartPostgreSQL implements ShoppingCartRepository {
 
   public async updateQuantityPerProduct(
     productId: string,
-    cartId: string,
+    userId: string,
     quantity: number,
   ) {
+    const cart = await this.databaseService.executeQuery('SELECT cart_id FROM shopping_carts WHERE user_id=$1', [userId]);
+    const cartId = cart[0]['cart_id'];
     const cartIdDb = await this.databaseService.executeQuery(
       'SELECT cart_id FROM shopping_carts WHERE cart_id = $1',
       [cartId],
@@ -86,7 +91,9 @@ export class ShoppingCartPostgreSQL implements ShoppingCartRepository {
     );
   }
 
-  public async deleteProduct(productId: string, cartId: string) {
+  public async deleteProduct(productId: string, userId: string) {
+    const cart = await this.databaseService.executeQuery('SELECT cart_id FROM shopping_carts WHERE user_id=$1', [userId]);
+      const cartId = cart[0]['cart_id'];
     const productsShoppingCarts = await this.databaseService.executeQuery(
       'SELECT * FROM products_shopping_carts WHERE cart_id=$1 AND product_id=$2',
       [cartId, productId],
@@ -142,7 +149,7 @@ export class ShoppingCartPostgreSQL implements ShoppingCartRepository {
     const cartIdDB = cartId[0]['cart_id'];
 
     const cartDB = await this.databaseService.executeQuery(
-      'SELECT * FROM products_shopping_carts sh, products p  WHERE cart_id=$1 AND sh.product_id = p.product_id',
+      'SELECT P.product_id, P.title, PC.quantity, P.price, P.url_image FROM products P JOIN products_shopping_carts PC ON P.product_id = PC.product_id WHERE PC.cart_id = $1',
       [cartIdDB],
     );
 

@@ -8,23 +8,23 @@ export class ShoppingCartUpdaterService {
     private readonly shoppingCartRepository: ShoppingCartRepository,
   ) {}
 
-  public async addProduct(productId: string, cartId: string, quantity: number) {
-    await this.shoppingCartRepository.addProduct(productId, cartId, quantity);
+  public async addProduct(productId: string, userId: string, quantity: number) {
+    await this.shoppingCartRepository.addProduct(productId, userId, quantity);
   }
 
   public async updateQuantityPerProduct(
     productId: string,
-    cartId: string,
+    userId: string,
     quantity: number,
   ) {
     await this.shoppingCartRepository.updateQuantityPerProduct(
       productId,
-      cartId,
+      userId,
       quantity,
     );
   }
 
-  public async deleteProduct(productId: string, cartId: string) {
-    await this.shoppingCartRepository.deleteProduct(productId, cartId);
+  public async deleteProduct(productId: string, userId: string) {
+    await this.shoppingCartRepository.deleteProduct(productId, userId);
   }
 }
