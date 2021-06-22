@@ -8,6 +8,7 @@ import { ShoppingCartModule } from './ecommerce/shopping-cart/shopping-cart.modu
 import { ConfigService } from './config/config.service';
 import { Configuration } from './config/config.keys';
 import { CategoryModule } from './ecommerce/category/category.module';
+import { OrderModule } from './ecommerce/order/order.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { CategoryModule } from './ecommerce/category/category.module';
     ProductModule,
     ShoppingCartModule,
     CategoryModule,
+    OrderModule,
   ],
   controllers: [],
   providers: [],
