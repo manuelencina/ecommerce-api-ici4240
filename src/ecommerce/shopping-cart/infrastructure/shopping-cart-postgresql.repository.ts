@@ -12,6 +12,7 @@ export class ShoppingCartPostgreSQL implements ShoppingCartRepository {
         'INSERT INTO products_shopping_carts(product_id, cart_id, quantity) VALUES($1, $2, $3) RETURNING *',
         [productId, cartId, quantity],
       );
+
       const price = await this.databaseService.executeQuery(
         'SELECT price FROM products WHERE product_id=$1',
         [productId],
@@ -65,16 +66,20 @@ export class ShoppingCartPostgreSQL implements ShoppingCartRepository {
       'SELECT total_price FROM shopping_carts WHERE cart_id=$1',
       [cartId],
     );
+
     const updatedTotalPrice =
       totalPriceDB[0]['total_price'] -
       productsShoppingCarts[0]['quantity'] * productPrice[0]['price'];
+
     const newTotalPrice =
       updatedTotalPrice + productPrice[0]['price'] * quantity;
+
     const productsShoppingCartsUpdated =
       await this.databaseService.executeQuery(
         'UPDATE products_shopping_carts SET quantity=$1 WHERE cart_id=$2 AND product_id=$3 RETURNING *',
         [quantity, cartId, productId],
       );
+
     const updatedShoppingCart = await this.databaseService.executeQuery(
       'UPDATE shopping_carts SET total_price=$1 WHERE cart_id=$2 RETURNING *',
       [newTotalPrice, cartId],
@@ -86,6 +91,7 @@ export class ShoppingCartPostgreSQL implements ShoppingCartRepository {
       'SELECT * FROM products_shopping_carts WHERE cart_id=$1 AND product_id=$2',
       [cartId, productId],
     );
+
     if (productsShoppingCarts.length < 1) {
       throw new HttpException(
         `there is no product with id ${cartId} in cart with id ${productId}`,
@@ -102,6 +108,7 @@ export class ShoppingCartPostgreSQL implements ShoppingCartRepository {
       'SELECT total_price FROM shopping_carts WHERE cart_id=$1',
       [cartId],
     );
+
     const updatedTotalPrice =
       totalPriceDB[0]['total_price'] -
       productsShoppingCarts[0]['quantity'] * productPrice[0]['price'];
@@ -122,18 +129,23 @@ export class ShoppingCartPostgreSQL implements ShoppingCartRepository {
       'SELECT user_id from users WHERE user_id = $1',
       [userId],
     );
+
     if (userIdDB.length < 1) {
       throw new HttpException(`user does not exist`, HttpStatus.BAD_REQUEST);
     }
+
     const cartId = await this.databaseService.executeQuery(
       'SELECT cart_id FROM shopping_carts WHERE user_id = $1',
       [userIdDB[0]['user_id']],
     );
+
     const cartIdDB = cartId[0]['cart_id'];
+
     const cartDB = await this.databaseService.executeQuery(
       'SELECT * FROM products_shopping_carts sh, products p  WHERE cart_id=$1 AND sh.product_id = p.product_id',
       [cartIdDB],
     );
+
     return cartDB;
   }
 }
