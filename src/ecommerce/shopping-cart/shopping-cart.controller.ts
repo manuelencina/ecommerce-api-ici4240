@@ -6,18 +6,19 @@ import {
   ValidationPipe,
   Res,
   Get,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { Req } from '@nestjs/common';
 import { Body, Controller, Param, Post, UseGuards } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { Response, Request } from 'express';
 
 import { JwtAuthGuard } from '../authentication/guards/jwt-auth.guard';
-import { JwtPayload } from '../authentication/interfaces/jwt-payload.interface';
-import { ProductTrimmerDto } from '../product/dto/product-trimmer.dto';
 import { ProductUpdaterDto } from '../product/dto/product-updater.dto';
 import { ShoppingCartFinderService } from './application/find/shopping-cart-finder.service';
 import { ShoppingCartUpdaterService } from './application/update/shopping-cart-updater.service';
 
+@ApiTags('shopping-cart')
 @Controller('shopping-cart')
 export class ShoppingCartController {
   public constructor(
@@ -44,15 +45,17 @@ export class ShoppingCartController {
 
   @UsePipes(new ValidationPipe())
   @UseGuards(JwtAuthGuard)
-  @Post()
+  @Post(':productId')
   public async addProduct(
     @Body() body: ProductUpdaterDto,
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
+    @Param('productId', new ParseUUIDPipe({ version: '4' }))
+    productId: string,
   ) {
     try {
       await this.shoppingCartUpdater.addProduct(
-        body.productId,
+        productId,
         String(req.user),
         body.quantity,
       );
@@ -64,21 +67,23 @@ export class ShoppingCartController {
 
   @UsePipes(new ValidationPipe())
   @UseGuards(JwtAuthGuard)
-  @Put()
+  @Put(':productId')
   public async updateQuantityPerProduct(
     @Body() body: ProductUpdaterDto,
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
+    @Param('productId', new ParseUUIDPipe({ version: '4' }))
+    productId: string,
   ) {
     try {
       if (body.quantity === 0) {
         await this.shoppingCartUpdater.deleteProduct(
-          body.productId,
+          productId,
           String(req.user),
         );
       } else {
         await this.shoppingCartUpdater.updateQuantityPerProduct(
-          body.productId,
+          productId,
           String(req.user),
           body.quantity,
         );
@@ -91,14 +96,15 @@ export class ShoppingCartController {
 
   @UsePipes(new ValidationPipe())
   @UseGuards(JwtAuthGuard)
-  @Delete()
+  @Delete(':productId')
   public async deleteProduct(
-    @Body() body: ProductTrimmerDto,
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
+    @Param('productId', new ParseUUIDPipe({ version: '4' }))
+    productId: string,
   ) {
     try {
-      await this.shoppingCartUpdater.deleteProduct(body.productId, String(req.user));
+      await this.shoppingCartUpdater.deleteProduct(productId, String(req.user));
       return this.generateMessage('product successfully removed');
     } catch (error) {
       return this.generateResponseForBadRequest(res, error);

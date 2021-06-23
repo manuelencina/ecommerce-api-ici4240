@@ -11,6 +11,7 @@ import {
   ValidationPipe,
   ParseUUIDPipe,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import { JwtAuthGuard } from '../authentication/guards/jwt-auth.guard';
 import { OrderCreatorService } from './application/create/order-creator.service';
@@ -22,6 +23,7 @@ interface OrderCreatorDto {
   productsId: string[];
 }
 
+@ApiTags('order')
 @Controller('order')
 export class OrderController {
   public constructor(
@@ -58,11 +60,11 @@ export class OrderController {
 
   @UsePipes(new ValidationPipe())
   @UseGuards(JwtAuthGuard)
-  @Put(':productId/:createAt')
+  @Put(':productId/:orderId')
   public async getProductsByBrandId(
     @Param('productId', new ParseUUIDPipe({ version: '4' }))
     productId: string,
-    @Param('createAt', new ParseUUIDPipe({ version: '4' }))
+    @Param('orderId', new ParseUUIDPipe({ version: '4' }))
     orderId: string,
     @Req() req: Request,
   ) {

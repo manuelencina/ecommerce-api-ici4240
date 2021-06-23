@@ -1,6 +1,8 @@
 import { Controller, Get } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { CategoryFinderService } from './application/find/category-finder.service';
 
+@ApiTags('categories')
 @Controller('categories')
 export class CategoryController {
   public constructor(private readonly categoryFinder: CategoryFinderService) {}
@@ -17,12 +19,5 @@ export class CategoryController {
         error,
       };
     }
-  }
-
-  @Get('test')
-  public test() {
-    return {
-      message: 'Test',
-    };
   }
 }

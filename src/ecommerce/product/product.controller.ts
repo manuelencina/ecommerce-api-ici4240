@@ -1,7 +1,9 @@
 import { ParseUUIDPipe } from '@nestjs/common';
 import { Controller, Get, Param } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { ProductFinderService } from './application/product-finder/product-finder.service';
 
+@ApiTags('products')
 @Controller('products')
 export class ProductController {
   public constructor(

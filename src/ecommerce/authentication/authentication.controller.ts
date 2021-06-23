@@ -10,18 +10,32 @@ import {
   HttpException,
   HttpCode,
 } from '@nestjs/common';
+import {
+  ApiBadRequestResponse,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Response } from 'express';
 
 import { LoginUserDto } from '../user/dto/login-user.dto';
 import { RegisterUserDto } from '../user/dto/register-user.dto';
 import { AuthenticationService } from './authentication.service';
 
+@ApiTags('authentication')
 @Controller('authentication')
 export class AuthenticationController {
   public constructor(
     private readonly authenticationService: AuthenticationService,
   ) {}
 
+  @ApiCreatedResponse({
+    description: 'obtain authentication token',
+    type: 'string',
+  })
+  @ApiBadRequestResponse({
+    description: 'invalid registration data',
+  })
   @UsePipes(new ValidationPipe())
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
