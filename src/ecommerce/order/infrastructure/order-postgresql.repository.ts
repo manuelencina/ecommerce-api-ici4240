@@ -40,6 +40,20 @@ export class OrderPostgreSQL implements OrderRepository {
     this.updateShoppingCartTotalPrice(userId);
   }
 
+  public async get(userId: string) {
+    const query =
+      'SELECT P.product_id,O.order_id,P.title,P.price,P.url_image,PO.quantity,O.total_price AS orders_total_price,PO.rated, O.create_at FROM orders O  INNER JOIN products_orders PO ON (O.order_id=PO.order_id) JOIN products P ON (P.product_id = PO.product_id) WHERE O.user_id=$1';
+    const orders = await this.databaseService.executeQuery(query, [userId]);
+    return orders;
+  }
+
+  public async updateRating(productId: string, orderId: string) {
+    const updatedRating = await this.databaseService.executeQuery(
+      'UPDATE products_orders SET rated=true WHERE product_id=$1 AND order_id=$2',
+      [productId, orderId],
+    );
+  }
+
   private async validateStocks(productsShoppingCarts: any[]) {
     productsShoppingCarts.forEach(async (product) => {
       const productStock = await this.databaseService.executeQuery(
