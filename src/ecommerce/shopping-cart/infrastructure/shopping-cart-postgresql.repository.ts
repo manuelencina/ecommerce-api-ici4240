@@ -8,13 +8,30 @@ export class ShoppingCartPostgreSQL implements ShoppingCartRepository {
 
   public async addProduct(productId: string, userId: string, quantity: number) {
     try {
-      const cart = await this.databaseService.executeQuery('SELECT cart_id FROM shopping_carts WHERE user_id=$1', [userId]);
+      const cart = await this.databaseService.executeQuery(
+        'SELECT cart_id FROM shopping_carts WHERE user_id=$1',
+        [userId],
+      );
       const cartId = cart[0]['cart_id'];
 
-      await this.databaseService.executeQuery(
-        'INSERT INTO products_shopping_carts(product_id, cart_id, quantity) VALUES($1, $2, $3) RETURNING *',
-        [productId, cartId, quantity],
+      const productDB = await this.databaseService.executeQuery(
+        'SELECT product_id, quantity FROM products_shopping_carts',
       );
+
+      const productIdDb = productDB[0]['product_id'];
+
+      if (productIdDb.length > 0) {
+        const updatedQuantity = productDB[0]['quantity'] + 1;
+        await this.databaseService.executeQuery(
+          'UPDATE products_shopping_carts SET quantity=$1 WHERE product_id=$2',
+          [updatedQuantity, productIdDb],
+        );
+      } else {
+        await this.databaseService.executeQuery(
+          'INSERT INTO products_shopping_carts(product_id, cart_id, quantity) VALUES($1, $2, $3) RETURNING *',
+          [productId, cartId, quantity],
+        );
+      }
 
       const price = await this.databaseService.executeQuery(
         'SELECT price FROM products WHERE product_id=$1',
@@ -43,7 +60,10 @@ export class ShoppingCartPostgreSQL implements ShoppingCartRepository {
     userId: string,
     quantity: number,
   ) {
-    const cart = await this.databaseService.executeQuery('SELECT cart_id FROM shopping_carts WHERE user_id=$1', [userId]);
+    const cart = await this.databaseService.executeQuery(
+      'SELECT cart_id FROM shopping_carts WHERE user_id=$1',
+      [userId],
+    );
     const cartId = cart[0]['cart_id'];
     const cartIdDb = await this.databaseService.executeQuery(
       'SELECT cart_id FROM shopping_carts WHERE cart_id = $1',
@@ -92,8 +112,11 @@ export class ShoppingCartPostgreSQL implements ShoppingCartRepository {
   }
 
   public async deleteProduct(productId: string, userId: string) {
-    const cart = await this.databaseService.executeQuery('SELECT cart_id FROM shopping_carts WHERE user_id=$1', [userId]);
-      const cartId = cart[0]['cart_id'];
+    const cart = await this.databaseService.executeQuery(
+      'SELECT cart_id FROM shopping_carts WHERE user_id=$1',
+      [userId],
+    );
+    const cartId = cart[0]['cart_id'];
     const productsShoppingCarts = await this.databaseService.executeQuery(
       'SELECT * FROM products_shopping_carts WHERE cart_id=$1 AND product_id=$2',
       [cartId, productId],
