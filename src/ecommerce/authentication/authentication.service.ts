@@ -36,6 +36,10 @@ export class AuthenticationService {
     return accessToken;
   }
 
+  public async profile(userId: string) {
+    return await this.userFinderService.getById(userId);
+  }
+
   private createToken(userId: string) {
     const accessToken = this.jwtService.sign({
       iss: 'ecommerce-api-ici4240',

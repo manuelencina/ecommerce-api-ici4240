@@ -9,6 +9,9 @@ import {
   HttpStatus,
   HttpException,
   HttpCode,
+  Req,
+  Get,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -16,11 +19,12 @@ import {
   ApiOkResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 
 import { LoginUserDto } from '../user/dto/login-user.dto';
 import { RegisterUserDto } from '../user/dto/register-user.dto';
 import { AuthenticationService } from './authentication.service';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 @ApiTags('authentication')
 @Controller('authentication')
@@ -79,6 +83,20 @@ export class AuthenticationController {
       // status: error.getStatus(),
       // message: error.getResponse(),
       error,
+    };
+  }
+
+  @UsePipes(new ValidationPipe())
+  @UseGuards(JwtAuthGuard)
+  @Get('profile')
+  @HttpCode(HttpStatus.OK)
+  public async profile(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const user = await this.authenticationService.profile(String(req.user));
+    return {
+      user,
     };
   }
 }
