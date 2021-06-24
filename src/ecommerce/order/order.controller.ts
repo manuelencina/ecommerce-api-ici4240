@@ -1,5 +1,4 @@
 import {
-  Body,
   Controller,
   Get,
   Post,
@@ -11,7 +10,7 @@ import {
   ValidationPipe,
   ParseUUIDPipe,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import { JwtAuthGuard } from '../authentication/guards/jwt-auth.guard';
 import { OrderCreatorService } from './application/create/order-creator.service';
@@ -32,6 +31,7 @@ export class OrderController {
     private readonly ratingUpdater: RatingUpdaterService,
   ) {}
 
+  @ApiBearerAuth('JWT')
   @UsePipes(new ValidationPipe())
   @UseGuards(JwtAuthGuard)
   @Post()
@@ -48,6 +48,7 @@ export class OrderController {
     }
   }
 
+  @ApiBearerAuth('JWT')
   @UsePipes(new ValidationPipe())
   @UseGuards(JwtAuthGuard)
   @Get()
@@ -58,6 +59,7 @@ export class OrderController {
     };
   }
 
+  @ApiBearerAuth('JWT')
   @UsePipes(new ValidationPipe())
   @UseGuards(JwtAuthGuard)
   @Put(':productId/:orderId')

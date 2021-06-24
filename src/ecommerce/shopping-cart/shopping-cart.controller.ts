@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { Req } from '@nestjs/common';
 import { Body, Controller, Param, Post, UseGuards } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Response, Request } from 'express';
 
 import { JwtAuthGuard } from '../authentication/guards/jwt-auth.guard';
@@ -26,6 +26,7 @@ export class ShoppingCartController {
     private readonly shoppingCartFinder: ShoppingCartFinderService,
   ) {}
 
+  @ApiBearerAuth('JWT')
   @UsePipes(new ValidationPipe())
   @UseGuards(JwtAuthGuard)
   @Get()
@@ -43,6 +44,7 @@ export class ShoppingCartController {
     }
   }
 
+  @ApiBearerAuth('JWT')
   @UsePipes(new ValidationPipe())
   @UseGuards(JwtAuthGuard)
   @Post(':productId')
@@ -65,6 +67,7 @@ export class ShoppingCartController {
     }
   }
 
+  @ApiBearerAuth('JWT')
   @UsePipes(new ValidationPipe())
   @UseGuards(JwtAuthGuard)
   @Put(':productId')
@@ -94,6 +97,7 @@ export class ShoppingCartController {
     }
   }
 
+  @ApiBearerAuth('JWT')
   @UsePipes(new ValidationPipe())
   @UseGuards(JwtAuthGuard)
   @Delete(':productId')
