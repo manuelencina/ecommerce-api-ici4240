@@ -92,12 +92,12 @@ export class UserRepositoryPostgresql implements UserRepository {
 
   public async getById(userId: string) {
     const userDB = await this.databaseService.executeQuery(
-      'SELECT * FROM users WHERE user_id = $1',
+      'SELECT firstname,lastname,email,idcard,residence_address,region,commune FROM users WHERE user_id = $1',
       [userId],
     );
     if (userDB.length < 1) {
       throw new HttpException(`Invalid credentials`, HttpStatus.BAD_REQUEST);
     }
-    return userDB;
+    return userDB[0];
   }
 }
