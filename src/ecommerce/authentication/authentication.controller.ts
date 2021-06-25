@@ -12,6 +12,7 @@ import {
   Req,
   Get,
   UseGuards,
+  Put,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -23,6 +24,7 @@ import { Request, Response } from 'express';
 
 import { LoginUserDto } from '../user/dto/login-user.dto';
 import { RegisterUserDto } from '../user/dto/register-user.dto';
+import { UpdateUserDto } from '../user/dto/update-user.dto';
 import { AuthenticationService } from './authentication.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
@@ -90,13 +92,31 @@ export class AuthenticationController {
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   @HttpCode(HttpStatus.OK)
-  public async profile(
+  public async getProfile(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const user = await this.authenticationService.profile(String(req.user));
+    const user = await this.authenticationService.getUser(String(req.user));
     return {
       user,
+    };
+  }
+
+  @UsePipes(new ValidationPipe())
+  @UseGuards(JwtAuthGuard)
+  @Put('profile')
+  @HttpCode(HttpStatus.OK)
+  public async putProfile(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    await this.authenticationService.updateUser(
+      updateUserDto,
+      String(req.user),
+    );
+    return {
+      message: 'updated profile',
     };
   }
 }

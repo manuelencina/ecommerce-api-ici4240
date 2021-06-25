@@ -5,6 +5,8 @@ import { RegisterUserDto } from '../user/dto/register-user.dto';
 import { UserCreatorService } from '../user/application/user-creator/user-creator.service';
 import { LoginUserDto } from '../user/dto/login-user.dto';
 import { UserFinderService } from '../user/application/user-finder/user-finder.service';
+import { UserUpdaterService } from '../user/application/update/user-updater.service';
+import { UpdateUserDto } from '../user/dto/update-user.dto';
 
 @Injectable()
 export class AuthenticationService {
@@ -12,6 +14,7 @@ export class AuthenticationService {
     private readonly jwtService: JwtService,
     private readonly userCreatorService: UserCreatorService,
     private readonly userFinderService: UserFinderService,
+    private readonly userUpdater: UserUpdaterService,
   ) {}
 
   public async validateUser(payload: JwtPayload) {
@@ -36,8 +39,12 @@ export class AuthenticationService {
     return accessToken;
   }
 
-  public async profile(userId: string) {
+  public async getUser(userId: string) {
     return await this.userFinderService.getById(userId);
+  }
+
+  public async updateUser(updateUserDto: UpdateUserDto, userId: string) {
+    return await this.userUpdater.updateUser(updateUserDto, userId);
   }
 
   private createToken(userId: string) {

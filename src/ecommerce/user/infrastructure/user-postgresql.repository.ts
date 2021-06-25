@@ -5,9 +5,10 @@ import { DatabaseService } from 'src/database/database.service';
 import { RegisterUserDto } from '../dto/register-user.dto';
 import { UserRepository } from '../domain/user-repository';
 import { LoginUserDto } from '../dto/login-user.dto';
+import { UpdateUserDto } from '../dto/update-user.dto';
 
 @Injectable()
-export class UserRepositoryPostgresql implements UserRepository {
+export class UserPostgreSQL implements UserRepository {
   public constructor(private readonly databaseService: DatabaseService) {}
 
   public async save(userDto: RegisterUserDto) {
@@ -99,5 +100,55 @@ export class UserRepositoryPostgresql implements UserRepository {
       throw new HttpException(`Invalid credentials`, HttpStatus.BAD_REQUEST);
     }
     return userDB[0];
+  }
+
+  public async update(updateUserDto: UpdateUserDto, userId: string) {
+    const userDb = await this.databaseService.executeQuery(
+      'SELECT user_id, email FROM users WHERE user_id=$1',
+      [userId],
+    );
+
+    if (userDb.length === 0) {
+      throw new HttpException(
+        `user does not exists with id ${userId}`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const {
+      firstname,
+      lastname,
+      commune,
+      email,
+      idcard,
+      region,
+      residence_address,
+    } = updateUserDto;
+
+    const user = await this.databaseService.executeQuery(
+      'SELECT email FROM users WHERE email=$1 AND user_id != $2',
+      [email, userId],
+    );
+
+    if (user.length > 0) {
+      throw new HttpException(
+        `user with email ${email} already exists`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    return await this.databaseService.executeQuery(
+      'UPDATE users SET firstname=$1, lastname=$2, email=$3, idcard=$4, region=$5, commune=$6, residence_address=$7 WHERE user_id=$8 RETURNING *',
+      [
+        firstname,
+        lastname,
+        email,
+        idcard,
+        region,
+        commune,
+        residence_address,
+        userId,
+      ],
+    );
   }
 }
