@@ -3,8 +3,6 @@ import { DatabaseModule } from 'src/database/database.module';
 import { UserPostgreSQL } from './infrastructure/user-postgresql.repository';
 import { UserCreatorService } from './application/user-creator/user-creator.service';
 import { UserFinderService } from './application/user-finder/user-finder.service';
-import { AuthenticationModule } from '../authentication/authentication.module';
-import { UserController } from './user.controller';
 import { UserUpdaterService } from './application/update/user-updater.service';
 
 @Module({
@@ -25,6 +23,5 @@ import { UserUpdaterService } from './application/update/user-updater.service';
     UserFinderService,
     UserUpdaterService,
   ],
-  controllers: [UserController],
 })
 export class UserModule {}
