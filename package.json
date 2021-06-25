@@ -2,9 +2,12 @@
   "name": "ecommerce-api-ici4240",
   "version": "0.0.1",
   "description": "",
-  "author": "",
+  "author": "Manuel Encina Muñoz",
   "private": true,
   "license": "UNLICENSED",
+  "engines": {
+    "node": "14.15.1"
+  },
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
