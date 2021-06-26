@@ -14,17 +14,16 @@ export class ShoppingCartPostgreSQL implements ShoppingCartRepository {
       );
       const cartId = cart[0]['cart_id'];
 
-      const productDB = await this.databaseService.executeQuery(
-        'SELECT product_id, quantity FROM products_shopping_carts',
+      const productShoppingCart = await this.databaseService.executeQuery(
+        'SELECT product_id, quantity FROM products_shopping_carts WHERE product_id=$1 AND cart_id=$2',
+        [productId, cartId],
       );
 
-      const productIdDb = productDB[0]['product_id'];
-
-      if (productIdDb.length > 0) {
-        const updatedQuantity = productDB[0]['quantity'] + 1;
+      if (productShoppingCart.length > 0) {
+        const updatedQuantity = productShoppingCart[0]['quantity'] + 1;
         await this.databaseService.executeQuery(
           'UPDATE products_shopping_carts SET quantity=$1 WHERE product_id=$2',
-          [updatedQuantity, productIdDb],
+          [updatedQuantity, productId],
         );
       } else {
         await this.databaseService.executeQuery(
@@ -46,12 +45,12 @@ export class ShoppingCartPostgreSQL implements ShoppingCartRepository {
       const updatedTotalPrice =
         totalPriceDB[0]['total_price'] + price[0]['price'] * quantity;
 
-      const updatedCart = await this.databaseService.executeQuery(
+      await this.databaseService.executeQuery(
         'UPDATE shopping_carts SET total_price=$1 WHERE cart_id=$2 RETURNING *',
         [updatedTotalPrice, cartId],
       );
     } catch (error) {
-      throw new HttpException(`invalid id`, HttpStatus.BAD_REQUEST);
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
     }
   }
 
