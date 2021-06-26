@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import { OrderRepository } from '../domain/order-repository';
+import { RatingCreatorDto } from '../dto/rating-creator.dto';
 
 @Injectable()
 export class OrderPostgreSQL implements OrderRepository {
@@ -47,10 +48,23 @@ export class OrderPostgreSQL implements OrderRepository {
     return orders;
   }
 
-  public async updateRating(productId: string, orderId: string) {
+  public async updateRating(
+    productId: string,
+    orderId: string,
+    rating: RatingCreatorDto,
+  ) {
+    const { comment, score } = rating;
     const updatedRating = await this.databaseService.executeQuery(
       'UPDATE products_orders SET rated=true WHERE product_id=$1 AND order_id=$2',
       [productId, orderId],
+    );
+    const userId = await this.databaseService.executeQuery(
+      'SELECT user_id FROM orders WHERE order_id=$1',
+      [orderId],
+    );
+    await this.databaseService.executeQuery(
+      'INSERT INTO ratings(score,comment,product_id,user_id) VALUES($1,$2,$3,$4)',
+      [score, comment, productId, userId[0]['user_id']],
     );
   }
 

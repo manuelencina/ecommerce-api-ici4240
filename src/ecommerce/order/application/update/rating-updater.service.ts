@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { OrderRepository } from '../../domain/order-repository';
+import { RatingCreatorDto } from '../../dto/rating-creator.dto';
 
 @Injectable()
 export class RatingUpdaterService {
@@ -8,7 +9,11 @@ export class RatingUpdaterService {
     private readonly orderRepository: OrderRepository,
   ) {}
 
-  public async updateRating(productId: string, orderId: string) {
-    return await this.orderRepository.updateRating(productId, orderId);
+  public async updateRating(
+    productId: string,
+    orderId: string,
+    rating: RatingCreatorDto,
+  ) {
+    return await this.orderRepository.updateRating(productId, orderId, rating);
   }
 }

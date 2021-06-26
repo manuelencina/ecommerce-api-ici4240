@@ -9,6 +9,7 @@ import {
   UsePipes,
   ValidationPipe,
   ParseUUIDPipe,
+  Body,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
@@ -16,11 +17,12 @@ import { JwtAuthGuard } from '../authentication/guards/jwt-auth.guard';
 import { OrderCreatorService } from './application/create/order-creator.service';
 import { OrderFinderService } from './application/find/order-finder.service';
 import { RatingUpdaterService } from './application/update/rating-updater.service';
+import { RatingCreatorDto } from './dto/rating-creator.dto';
 
-interface OrderCreatorDto {
-  userId: string;
-  productsId: string[];
-}
+// export interface RatingCreatorDto {
+//   score: number;
+//   comment: string;
+// }
 
 @ApiTags('order')
 @Controller('order')
@@ -68,9 +70,9 @@ export class OrderController {
     productId: string,
     @Param('orderId', new ParseUUIDPipe({ version: '4' }))
     orderId: string,
-    @Req() req: Request,
+    @Body() rating: RatingCreatorDto,
   ) {
-    await this.ratingUpdater.updateRating(productId, orderId);
+    await this.ratingUpdater.updateRating(productId, orderId, rating);
     return {
       message: 'rating successfully updated',
     };
