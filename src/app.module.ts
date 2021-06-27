@@ -1,3 +1,5 @@
+import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from './config/config.module';
 import { DatabaseModule } from './database/database.module';
@@ -12,6 +14,10 @@ import { OrderModule } from './ecommerce/order/order.module';
 
 @Module({
   imports: [
+    ThrottlerModule.forRoot({
+      ttl: 30,
+      limit: 5,
+    }),
     ConfigModule,
     DatabaseModule,
     AuthenticationModule,
@@ -22,7 +28,12 @@ import { OrderModule } from './ecommerce/order/order.module';
     OrderModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule {
   static port: number | string;
