@@ -47,6 +47,8 @@ export class AuthenticationController {
   })
   // @UseGuards(ThrottlerGuard)
   // @Throttle(5, 30)
+  @UsePipes(new ValidationPipe())
+  @Post('register')
   @rateLimit({
     allowedCalls: 10,
     timeSpanMs: 1000 * 60 * 60,
@@ -58,8 +60,6 @@ export class AuthenticationController {
       );
     },
   })
-  @UsePipes(new ValidationPipe())
-  @Post('register')
   @HttpCode(HttpStatus.CREATED)
   public async register(
     @Body() registerUserDto: RegisterUserDto,
