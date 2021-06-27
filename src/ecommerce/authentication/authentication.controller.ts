@@ -20,6 +20,7 @@ import {
   ApiOkResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { Request, Response } from 'express';
 
 import { LoginUserDto } from '../user/dto/login-user.dto';
@@ -42,6 +43,8 @@ export class AuthenticationController {
   @ApiBadRequestResponse({
     description: 'invalid registration data',
   })
+  @UseGuards(ThrottlerGuard)
+  @Throttle(5, 30)
   @UsePipes(new ValidationPipe())
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
