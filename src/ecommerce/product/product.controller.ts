@@ -25,13 +25,13 @@ export class ProductController {
     }
   }
 
-  @Get('by-category/:criteriaId')
+  @Get('by-category/:categoryId')
   public async getProductsByCategoryId(
-    @Param('criteriaId', new ParseUUIDPipe({ version: '4' }))
-    criteriaId: string,
+    @Param('categoryId', new ParseUUIDPipe({ version: '4' }))
+    categoryId: string,
   ) {
     const products = await this.productFinderService.get(
-      criteriaId,
+      categoryId,
       'category_id',
     );
     return {
@@ -39,15 +39,12 @@ export class ProductController {
     };
   }
 
-  @Get('by-brand/:criteriaId')
+  @Get('by-brand/:brandId')
   public async getProductsByBrandId(
-    @Param('criteriaId', new ParseUUIDPipe({ version: '4' }))
-    criteriaId: string,
+    @Param('brandId', new ParseUUIDPipe({ version: '4' }))
+    brandId: string,
   ) {
-    const products = await this.productFinderService.get(
-      criteriaId,
-      'brand_id',
-    );
+    const products = await this.productFinderService.get(brandId, 'brand_id');
     return {
       products,
     };
