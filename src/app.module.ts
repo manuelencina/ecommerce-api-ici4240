@@ -14,10 +14,10 @@ import { OrderModule } from './ecommerce/order/order.module';
 
 @Module({
   imports: [
-    ThrottlerModule.forRoot({
-      ttl: 30,
-      limit: 5,
-    }),
+    // ThrottlerModule.forRoot({
+    //   ttl: 30,
+    //   limit: 5,
+    // }),
     ConfigModule,
     DatabaseModule,
     AuthenticationModule,

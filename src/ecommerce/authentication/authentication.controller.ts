@@ -13,6 +13,7 @@ import {
   Get,
   UseGuards,
   Put,
+  ExecutionContext,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -22,6 +23,7 @@ import {
 } from '@nestjs/swagger';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { Request, Response } from 'express';
+import { rateLimit } from 'utils-decorators';
 
 import { LoginUserDto } from '../user/dto/login-user.dto';
 import { RegisterUserDto } from '../user/dto/register-user.dto';
@@ -43,8 +45,20 @@ export class AuthenticationController {
   @ApiBadRequestResponse({
     description: 'invalid registration data',
   })
-  @UseGuards(ThrottlerGuard)
-  @Throttle(5, 30)
+  // @UseGuards(ThrottlerGuard)
+  // @Throttle(5, 30)
+  @rateLimit({
+    allowedCalls: 5,
+    timeSpanMs: 2000,
+    keyResolver: (context: ExecutionContext) =>
+      context.switchToHttp().getRequest().ip,
+    exceedHandler: () => {
+      throw new HttpException(
+        'Rate limit exceed',
+        HttpStatus.TOO_MANY_REQUESTS,
+      );
+    },
+  })
   @UsePipes(new ValidationPipe())
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
