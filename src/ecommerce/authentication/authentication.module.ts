@@ -7,6 +7,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './jwt-payload-constants';
 import { UserModule } from '../user/user.module';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { LocationRateLimitInterceptor } from './interceptors/location-rate-limit.interceptor';
 
 @Module({
   imports: [
@@ -24,8 +25,8 @@ import { JwtStrategy } from './strategies/jwt.strategy';
       },
     }),
   ],
-  providers: [AuthenticationService, JwtStrategy],
-  exports: [AuthenticationService],
+  providers: [AuthenticationService, JwtStrategy, LocationRateLimitInterceptor],
+  exports: [AuthenticationService, LocationRateLimitInterceptor],
   controllers: [AuthenticationController],
 })
 export class AuthenticationModule {}

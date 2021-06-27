@@ -14,6 +14,7 @@ import {
   UseGuards,
   Put,
   ExecutionContext,
+  UseInterceptors,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -30,6 +31,7 @@ import { RegisterUserDto } from '../user/dto/register-user.dto';
 import { UpdateUserDto } from '../user/dto/update-user.dto';
 import { AuthenticationService } from './authentication.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { LocationRateLimitInterceptor } from './interceptors/location-rate-limit.interceptor';
 
 @ApiTags('authentication')
 @Controller('authentication')
@@ -45,21 +47,9 @@ export class AuthenticationController {
   @ApiBadRequestResponse({
     description: 'invalid registration data',
   })
-  // @UseGuards(ThrottlerGuard)
-  // @Throttle(5, 30)
   @UsePipes(new ValidationPipe())
+  @UseInterceptors(new LocationRateLimitInterceptor())
   @Post('register')
-  @rateLimit({
-    allowedCalls: 10,
-    timeSpanMs: 1000 * 60 * 60,
-    keyResolver: (req: Request) => req.ip,
-    exceedHandler: () => {
-      throw new HttpException(
-        'Rate limit exceed',
-        HttpStatus.TOO_MANY_REQUESTS,
-      );
-    },
-  })
   @HttpCode(HttpStatus.CREATED)
   public async register(
     @Body() registerUserDto: RegisterUserDto,
@@ -78,6 +68,7 @@ export class AuthenticationController {
   }
 
   @UsePipes(new ValidationPipe())
+  @UseInterceptors(new LocationRateLimitInterceptor())
   @Post('login')
   @HttpCode(HttpStatus.OK)
   public async login(
