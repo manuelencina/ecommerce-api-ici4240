@@ -19,11 +19,6 @@ import { OrderFinderService } from './application/find/order-finder.service';
 import { RatingUpdaterService } from './application/update/rating-updater.service';
 import { RatingCreatorDto } from './dto/rating-creator.dto';
 
-// export interface RatingCreatorDto {
-//   score: number;
-//   comment: string;
-// }
-
 @ApiTags('order')
 @Controller('order')
 export class OrderController {
