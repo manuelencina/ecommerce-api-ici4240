@@ -28,12 +28,7 @@ import { OrderModule } from './ecommerce/order/order.module';
     OrderModule,
   ],
   controllers: [],
-  providers: [
-    {
-      provide: APP_GUARD,
-      useClass: ThrottlerGuard,
-    },
-  ],
+  providers: [],
 })
 export class AppModule {
   static port: number | string;
