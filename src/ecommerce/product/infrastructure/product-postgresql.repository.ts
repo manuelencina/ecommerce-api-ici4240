@@ -33,6 +33,9 @@ export class ProductPostgresqlRepository implements ProductRepository {
       productId,
     ]);
 
+    const convertedAverageScore = Number(productDb[0]['average_score']);
+    productDb[0]['average_score'] = convertedAverageScore;
+
     return { product: productDb[0], ratings };
   }
 }

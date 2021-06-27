@@ -54,6 +54,7 @@ export class OrderPostgreSQL implements OrderRepository {
     rating: RatingCreatorDto,
   ) {
     const { comment, score } = rating;
+
     const updatedRating = await this.databaseService.executeQuery(
       'UPDATE products_orders SET rated=true WHERE product_id=$1 AND order_id=$2',
       [productId, orderId],
@@ -62,9 +63,21 @@ export class OrderPostgreSQL implements OrderRepository {
       'SELECT user_id FROM orders WHERE order_id=$1',
       [orderId],
     );
+
     await this.databaseService.executeQuery(
       'INSERT INTO ratings(score,comment,product_id,user_id) VALUES($1,$2,$3,$4)',
       [score, comment, productId, userId[0]['user_id']],
+    );
+
+    const averageScore = await this.databaseService.executeQuery(
+      'SELECT AVG(score) FROM ratings WHERE product_id=$1',
+      [productId],
+    );
+
+    const fixedAverageScore = Number(averageScore[0]['avg']).toFixed(2);
+    await this.databaseService.executeQuery(
+      'UPDATE products SET average_score=$1 WHERE product_id=$2',
+      [fixedAverageScore, productId],
     );
   }
 
@@ -74,7 +87,6 @@ export class OrderPostgreSQL implements OrderRepository {
         'SELECT stock FROM products WHERE product_id=$1',
         [product['product_id']],
       );
-      console.log(productStock[0]['stock']);
       if (productStock[0]['stock'] < product['quantity']) {
         throw new HttpException(
           `Unsuccessful purchase`,
