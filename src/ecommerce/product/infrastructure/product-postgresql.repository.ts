@@ -25,6 +25,14 @@ export class ProductPostgresqlRepository implements ProductRepository {
       'SELECT * from products WHERE product_id=$1',
       [productId],
     );
-    return productDb;
+
+    const ratingsQuery =
+      'SELECT U.firstname, U.lastname, R.score, R.comment FROM users U JOIN ratings R ON U.user_id=R.user_id WHERE R.product_id=$1';
+
+    const ratings = await this.databaseService.executeQuery(ratingsQuery, [
+      productId,
+    ]);
+
+    return { product: productDb[0], ratings };
   }
 }

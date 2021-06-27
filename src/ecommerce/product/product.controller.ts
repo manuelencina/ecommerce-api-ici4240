@@ -18,7 +18,7 @@ export class ProductController {
     try {
       const product = await this.productFinderService.getProductById(productId);
       return {
-        product,
+        ...product,
       };
     } catch (error) {
       return { error };
