@@ -48,10 +48,9 @@ export class AuthenticationController {
   // @UseGuards(ThrottlerGuard)
   // @Throttle(5, 30)
   @rateLimit({
-    allowedCalls: 5,
-    timeSpanMs: 2000,
-    keyResolver: (context: ExecutionContext) =>
-      context.switchToHttp().getRequest().ip,
+    allowedCalls: 10,
+    timeSpanMs: 1000 * 60 * 60,
+    keyResolver: (req: Request) => req.ip,
     exceedHandler: () => {
       throw new HttpException(
         'Rate limit exceed',
