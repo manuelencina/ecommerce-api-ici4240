@@ -30,15 +30,36 @@ export class OrderPostgreSQL implements OrderRepository {
       [cartIdDB],
     );
 
-    this.validateStocks(productsShoppingCarts);
+    await this.validateStocks(productsShoppingCarts);
 
-    this.updateStocks(productsShoppingCarts);
+    await this.updateStocks(productsShoppingCarts);
 
-    this.createOrder(productsShoppingCarts, userId, totalPrice);
+    await this.createOrder(productsShoppingCarts, userId, totalPrice);
 
-    this.removeProductsFromShoppingCart(cartIdDB);
+    await this.removeProductsFromShoppingCart(cartIdDB);
 
-    this.updateShoppingCartTotalPrice(userId);
+    await this.updateShoppingCartTotalPrice(userId);
+  }
+
+  private async validateStocks(productsShoppingCarts: any[]) {
+    let httpExceptionMessage: string = '';
+    for (let i = 0; i < productsShoppingCarts.length; i++) {
+      const productStock = await this.databaseService.executeQuery(
+        'SELECT stock FROM products WHERE product_id=$1',
+        [productsShoppingCarts[i]['product_id']],
+      );
+      if (
+        productStock[0]['stock'] < productsShoppingCarts[i]['quantity'] ||
+        productStock[0]['stock'] === 0
+      ) {
+        httpExceptionMessage = 'Unsuccessful purchase';
+        break;
+      }
+    }
+
+    if (httpExceptionMessage.length > 0) {
+      throw new HttpException(httpExceptionMessage, HttpStatus.BAD_REQUEST);
+    }
   }
 
   public async get(userId: string) {
@@ -79,21 +100,6 @@ export class OrderPostgreSQL implements OrderRepository {
       'UPDATE products SET average_score=$1 WHERE product_id=$2',
       [fixedAverageScore, productId],
     );
-  }
-
-  private async validateStocks(productsShoppingCarts: any[]) {
-    productsShoppingCarts.forEach(async (product) => {
-      const productStock = await this.databaseService.executeQuery(
-        'SELECT stock FROM products WHERE product_id=$1',
-        [product['product_id']],
-      );
-      if (productStock[0]['stock'] < product['quantity']) {
-        throw new HttpException(
-          `Unsuccessful purchase`,
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-    });
   }
 
   private async updateStocks(productsShoppingCarts: any[]) {
