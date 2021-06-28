@@ -69,6 +69,13 @@ export class OrderPostgreSQL implements OrderRepository {
     return orders;
   }
 
+  public async getAll() {
+    const query =
+      'SELECT U.user_id,U.firstname,U.lastname,U.email,O.order_id,O.total_price,O.create_at,PO.quantity,P.product_id,P.title FROM users U JOIN orders O ON U.user_id=O.user_id JOIN products_orders PO ON O.order_id=PO.order_id JOIN products P ON P.product_id=PO.product_id';
+    const orders = await this.databaseService.executeQuery(query);
+    return orders;
+  }
+
   public async updateRating(
     productId: string,
     orderId: string,

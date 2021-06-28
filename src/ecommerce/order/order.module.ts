@@ -20,6 +20,6 @@ import { RatingUpdaterService } from './application/update/rating-updater.servic
     OrderFinderService,
     RatingUpdaterService,
   ],
-  exports: [OrderCreatorService, OrderPostgreSQL],
+  exports: [OrderCreatorService, OrderPostgreSQL, OrderFinderService],
 })
 export class OrderModule {}

@@ -11,4 +11,8 @@ export class OrderFinderService {
   public async get(userId: string) {
     return await this.orderRepository.get(userId);
   }
+
+  public async getAll() {
+    return await this.orderRepository.getAll();
+  }
 }
