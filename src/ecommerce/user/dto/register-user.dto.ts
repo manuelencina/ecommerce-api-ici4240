@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsEmail, Matches } from 'class-validator';
+import { IsNotEmpty, IsEmail, Matches, IsString } from 'class-validator';
 
 export class RegisterUserDto {
   @ApiProperty()
@@ -42,4 +42,9 @@ export class RegisterUserDto {
   @IsNotEmpty()
   @Matches(/^[A-Za-zÑñ áéíóúÁÉÍÓÚ]*$/, { message: 'invalid commune' })
   commune: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  recaptcha: string;
 }

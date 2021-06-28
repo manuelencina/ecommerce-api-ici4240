@@ -13,14 +13,17 @@ import {
   UseGuards,
   Put,
   UseInterceptors,
+  Param,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
-  ApiOkResponse,
   ApiTags,
 } from '@nestjs/swagger';
 import { Request, Response } from 'express';
+import fetch from 'node-fetch';
+import { Configuration } from 'src/config/config.keys';
+import { ConfigService } from 'src/config/config.service';
 
 import { LoginUserDto } from '../user/dto/login-user.dto';
 import { RegisterUserDto } from '../user/dto/register-user.dto';
@@ -34,6 +37,7 @@ import { LocationRateLimitInterceptor } from './interceptors/location-rate-limit
 export class AuthenticationController {
   public constructor(
     private readonly authenticationService: AuthenticationService,
+    private readonly configService: ConfigService,
   ) {}
 
   @ApiCreatedResponse({
@@ -52,6 +56,13 @@ export class AuthenticationController {
     @Res({ passthrough: true }) res: Response,
   ) {
     try {
+      const { recaptcha } = registerUserDto;
+      const recaptchaToken = this.configService.get(
+        Configuration.RECAPTCHA_TOKEN_SECRET,
+      );
+      const recaptchaUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${recaptchaToken}&response=${recaptcha}`;
+
+      await this.verifySuccessRecaptcha(recaptchaUrl);
       const accessToken = await this.authenticationService.registerUser(
         registerUserDto,
       );
@@ -72,6 +83,13 @@ export class AuthenticationController {
     @Res({ passthrough: true }) res: Response,
   ) {
     try {
+      const { recaptcha } = loginUserDto;
+      const recaptchaToken = this.configService.get(
+        Configuration.RECAPTCHA_TOKEN_SECRET,
+      );
+      const recaptchaUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${recaptchaToken}&response=${recaptcha}`;
+
+      await this.verifySuccessRecaptcha(recaptchaUrl);
       const accessToken = await this.authenticationService.login(loginUserDto);
       res.status(HttpStatus.OK);
       return {
@@ -80,13 +98,6 @@ export class AuthenticationController {
     } catch (error) {
       return this.generateResponseForBadRequest(res, error);
     }
-  }
-
-  private generateResponseForBadRequest(res: Response, error: HttpException) {
-    res.status(400);
-    return {
-      error,
-    };
   }
 
   @UsePipes(new ValidationPipe())
@@ -118,6 +129,29 @@ export class AuthenticationController {
     );
     return {
       message: 'updated profile',
+    };
+  }
+
+  private async verifySuccessRecaptcha(recaptchaUrl: string) {
+    const verifiedReCaptcha = await this.verifyRecaptcha(recaptchaUrl);
+    if (!verifiedReCaptcha.success) {
+      throw new HttpException(
+        'invalid recaptcha token',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+  }
+
+  private async verifyRecaptcha(url: string) {
+    return fetch(url, { method: 'POST' }).then((_res) => {
+      return _res.json();
+    });
+  }
+
+  private generateResponseForBadRequest(res: Response, error: HttpException) {
+    res.status(400);
+    return {
+      error,
     };
   }
 }

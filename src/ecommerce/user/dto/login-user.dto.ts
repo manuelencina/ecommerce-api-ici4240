@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsEmail } from 'class-validator';
+import { IsNotEmpty, IsEmail, IsString } from 'class-validator';
 
 export class LoginUserDto {
   @ApiProperty()
@@ -10,4 +10,9 @@ export class LoginUserDto {
   @ApiProperty()
   @IsNotEmpty()
   readonly password: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  readonly recaptcha: string;
 }
