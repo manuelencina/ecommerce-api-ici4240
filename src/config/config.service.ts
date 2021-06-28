@@ -30,6 +30,7 @@ export class ConfigService {
         DB_PORT: process.env.DB_PORT,
         TOKEN_SECRET: process.env.TOKEN_SECRET,
         EXPIRES_IN: process.env.EXPIRES_IN,
+        RECAPTCHA_TOKEN_SECRET: process.env.RECAPTCHA_TOKEN_SECRET,
       };
     }
   }

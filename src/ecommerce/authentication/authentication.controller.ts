@@ -95,7 +95,7 @@ export class AuthenticationController {
       res.status(HttpStatus.OK);
       return {
         ...accessToken,
-        recaptcha: recaptchaToken,
+        tokenRecaptcha: recaptchaToken,
       };
     } catch (error) {
       return this.generateResponseForBadRequest(res, error);
