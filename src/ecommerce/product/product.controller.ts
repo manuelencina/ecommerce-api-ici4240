@@ -10,6 +10,14 @@ export class ProductController {
     private readonly productFinderService: ProductFinderService,
   ) {}
 
+  @Get('by-filter/:filter')
+  public async getProductsByFilter(@Param('filter') filter: string) {
+    const products = await this.productFinderService.getProductByFilter(filter);
+    return {
+      products,
+    };
+  }
+
   @Get(':productId')
   public async getProductById(
     @Param('productId', new ParseUUIDPipe({ version: '4' }))

@@ -8,6 +8,10 @@ export class ProductFinderService {
     private readonly productRepository: ProductRepository,
   ) {}
 
+  public async getProductByFilter(filter: string) {
+    return await this.productRepository.getProductByFilter(filter);
+  }
+
   public async get(criteriaId: string, criteriaType: string) {
     try {
       return await this.productRepository.get(criteriaId, criteriaType);

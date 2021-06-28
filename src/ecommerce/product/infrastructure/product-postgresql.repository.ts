@@ -6,6 +6,16 @@ import { ProductRepository } from '../domain/product-repository';
 export class ProductPostgresqlRepository implements ProductRepository {
   public constructor(private readonly databaseService: DatabaseService) {}
 
+  public async getProductByFilter(filter: string) {
+    const filterToUppsercase = filter.toUpperCase();
+    const replacedFilter = `%${filterToUppsercase.split('-').join('%')}%`;
+    const query = `SELECT product_id, category_id, brand_id, title, price, stock, description, url_image, average_score FROM products WHERE title like $1`;
+    const products = await this.databaseService.executeQuery(query, [
+      replacedFilter,
+    ]);
+    return products;
+  }
+
   public async get(criteriaId: string, criteriaType: string) {
     const query = `SELECT product_id, category_id, brand_id, title, price, stock, description, url_image, average_score FROM products WHERE ${criteriaType} = $1`;
     const products = await this.databaseService.executeQuery(query, [
