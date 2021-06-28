@@ -1,5 +1,3 @@
-import { APP_GUARD } from '@nestjs/core';
-import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from './config/config.module';
 import { DatabaseModule } from './database/database.module';
@@ -11,6 +9,7 @@ import { ConfigService } from './config/config.service';
 import { Configuration } from './config/config.keys';
 import { CategoryModule } from './ecommerce/category/category.module';
 import { OrderModule } from './ecommerce/order/order.module';
+import { AdminPanelModule } from './ecommerce/admin-panel/admin-panel.module';
 
 @Module({
   imports: [
@@ -22,6 +21,7 @@ import { OrderModule } from './ecommerce/order/order.module';
     ShoppingCartModule,
     CategoryModule,
     OrderModule,
+    AdminPanelModule,
   ],
   controllers: [],
   providers: [],
