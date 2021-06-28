@@ -30,17 +30,17 @@ export class RegisterUserDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  @Matches(/^[A-Za-zÑñ áéíóúÁÉÍÓÚ0-9]*$/, { message: 'invalid address' })
+  @IsString()
   residence_address: string;
 
   @ApiProperty()
   @IsNotEmpty()
-  @Matches(/^[A-Za-zÑñ áéíóúÁÉÍÓÚ0-9]*$/, { message: 'invalid region' })
+  @IsString()
   region: string;
 
   @ApiProperty()
   @IsNotEmpty()
-  @Matches(/^[A-Za-zÑñ áéíóúÁÉÍÓÚ]*$/, { message: 'invalid commune' })
+  @IsString()
   commune: string;
 
   @ApiProperty()
