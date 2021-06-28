@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Post,
@@ -13,7 +12,6 @@ import {
   Get,
   UseGuards,
   Put,
-  ExecutionContext,
   UseInterceptors,
 } from '@nestjs/common';
 import {
@@ -22,9 +20,7 @@ import {
   ApiOkResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { Request, Response } from 'express';
-import { rateLimit } from 'utils-decorators';
 
 import { LoginUserDto } from '../user/dto/login-user.dto';
 import { RegisterUserDto } from '../user/dto/register-user.dto';
@@ -89,8 +85,6 @@ export class AuthenticationController {
   private generateResponseForBadRequest(res: Response, error: HttpException) {
     res.status(400);
     return {
-      // status: error.getStatus(),
-      // message: error.getResponse(),
       error,
     };
   }
