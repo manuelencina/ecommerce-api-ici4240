@@ -90,7 +90,41 @@ export class AuthenticationController {
       const recaptchaUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${recaptchaToken}&response=${recaptcha}`;
 
       await this.verifySuccessRecaptcha(recaptchaUrl);
-      const accessToken = await this.authenticationService.login(loginUserDto);
+      const userRole = this.configService.get(Configuration.USER_ROLE);
+      const accessToken = await this.authenticationService.login(
+        loginUserDto,
+        userRole,
+      );
+      res.status(HttpStatus.OK);
+      return {
+        ...accessToken,
+      };
+    } catch (error) {
+      return this.generateResponseForBadRequest(res, error);
+    }
+  }
+
+  @UsePipes(new ValidationPipe())
+  @UseInterceptors(new LocationRateLimitInterceptor())
+  @Post('admin-panel/login')
+  @HttpCode(HttpStatus.OK)
+  public async adminLogin(
+    @Body() loginUserDto: LoginUserDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    try {
+      const { recaptcha } = loginUserDto;
+      const recaptchaToken = this.configService.get(
+        Configuration.RECAPTCHA_TOKEN_SECRET,
+      );
+      const recaptchaUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${recaptchaToken}&response=${recaptcha}`;
+
+      await this.verifySuccessRecaptcha(recaptchaUrl);
+      const adminRole = this.configService.get(Configuration.ADMIN_ROLE);
+      const accessToken = await this.authenticationService.login(
+        loginUserDto,
+        adminRole,
+      );
       res.status(HttpStatus.OK);
       return {
         ...accessToken,

@@ -33,8 +33,8 @@ export class AuthenticationService {
     return accessToken;
   }
 
-  public async login(loginUserDto: LoginUserDto) {
-    const user = await this.userFinderService.get(loginUserDto);
+  public async login(loginUserDto: LoginUserDto, role: string) {
+    const user = await this.userFinderService.get(loginUserDto, role);
     const accessToken = this.createToken(user['user_id']);
     return accessToken;
   }
