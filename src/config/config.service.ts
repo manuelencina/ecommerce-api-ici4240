@@ -31,6 +31,8 @@ export class ConfigService {
         TOKEN_SECRET: process.env.TOKEN_SECRET,
         EXPIRES_IN: process.env.EXPIRES_IN,
         RECAPTCHA_TOKEN_SECRET: process.env.RECAPTCHA_TOKEN_SECRET,
+        ADMIN_ROLE: process.env.ADMIN_ROLE,
+        USER_ROLE: process.env.USER_ROLE,
       };
     }
   }
