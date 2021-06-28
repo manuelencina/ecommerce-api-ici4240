@@ -8,11 +8,15 @@ export class UserFinderService {
     @Inject('UserRepository') private readonly userRepository: UserRepository,
   ) {}
 
-  public async get(loginUserDto: LoginUserDto) {
-    return await this.userRepository.get(loginUserDto);
+  public async get(loginUserDto: LoginUserDto, role: string) {
+    return await this.userRepository.get(loginUserDto, role);
   }
 
   public async getById(userId: string) {
     return await this.userRepository.getById(userId);
+  }
+
+  public async getAll() {
+    return await this.userRepository.getAll();
   }
 }

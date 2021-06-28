@@ -71,11 +71,11 @@ export class UserPostgreSQL implements UserRepository {
     }
   }
 
-  public async get(loginUserDto: LoginUserDto) {
+  public async get(loginUserDto: LoginUserDto, role: string) {
     const { email, password } = loginUserDto;
     const userDB = await this.databaseService.executeQuery(
-      'SELECT * FROM users WHERE email = $1',
-      [email],
+      'SELECT * FROM users WHERE email = $1 AND role = $2',
+      [email, role],
     );
 
     if (userDB.length < 1) {
@@ -100,6 +100,13 @@ export class UserPostgreSQL implements UserRepository {
       throw new HttpException(`Invalid credentials`, HttpStatus.BAD_REQUEST);
     }
     return userDB[0];
+  }
+
+  public async getAll() {
+    const query =
+      'SELECT user_id,firstname,lastname,email,idcard,region,commune,residence_address FROM users';
+    const users = await this.databaseService.executeQuery(query);
+    return users;
   }
 
   public async update(updateUserDto: UpdateUserDto, userId: string) {
