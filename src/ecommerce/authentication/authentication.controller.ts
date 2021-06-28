@@ -60,14 +60,15 @@ export class AuthenticationController {
       const recaptchaToken = this.configService.get(
         Configuration.RECAPTCHA_TOKEN_SECRET,
       );
-      const recaptchaUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${recaptchaToken}&response=${recaptcha}`;
+      // const recaptchaUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${recaptchaToken}&response=${recaptcha}`;
 
-      await this.verifySuccessRecaptcha(recaptchaUrl);
+      // await this.verifySuccessRecaptcha(recaptchaUrl);
       const accessToken = await this.authenticationService.registerUser(
         registerUserDto,
       );
       return {
         ...accessToken,
+        recaptcha: `${recaptchaToken}`,
       };
     } catch (error) {
       return this.generateResponseForBadRequest(res, error);
