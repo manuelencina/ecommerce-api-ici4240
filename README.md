@@ -24,9 +24,9 @@
 
 ## API DOCUMENTATION
 
+[READ API DOCUMENTATION](https://ecommerce-api-develop.herokuapp.com/api/docs)
+
 ```bash
-# deployment test
-$ https://ecommerce-api-develop.herokuapp.com/api/docs
 # development
 $ http://localhost:[PORT]/api/docs
 ```
