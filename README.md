@@ -22,6 +22,15 @@
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
+## API DOCUMENTATION
+
+```bash
+# deployment test
+$ https://ecommerce-api-develop.herokuapp.com/api/docs
+# development
+$ http://localhost:[PORT]/api/docs
+```
+
 ## Description
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
