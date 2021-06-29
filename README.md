@@ -26,7 +26,13 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
-## Installation
+## Global Installation
+
+```bash
+$ npm i -g @nestjs/cli
+```
+
+## Dependency Installation
 
 ```bash
 $ npm install
@@ -43,6 +49,26 @@ $ npm run start:dev
 
 # production mode
 $ npm run start:prod
+```
+
+# DEVELOPMENT MODE
+
+## Set development environment variables
+
+```bash
+create .env file and set the following variables:
+
+TOKEN_SECRET='YOUR TOKEN SEECRET'
+RECAPTCHA_TOKEN_SECRET='YOUR RECAPTCHA TOKEN'
+API_KEY_SECRET='YOUR KEY SECRET API'
+EXPIRES_IN='YOUR EXPIRES IN'
+DB_HOST='YOUR DB HOST'
+DB_USER='YOUR DB USER'
+DB_NAME='YOUR DB NAME'
+DB_PASSWORD='YOUR DB PASSWORD'
+DB_PORT='YOUR DB PORT'
+ADMIN_ROLE='ADMIN ROLE NAME'
+USER_ROLE='USER ROLE NAME'
 ```
 
 ## Test
