@@ -5,11 +5,12 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../authentication/guards/jwt-auth.guard';
 import { OrderFinderService } from '../order/application/find/order-finder.service';
 import { UserFinderService } from '../user/application/user-finder/user-finder.service';
 
+@ApiTags('admin-panel')
 @Controller('admin-panel')
 export class AdminPanelController {
   public constructor(
